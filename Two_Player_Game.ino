@@ -1,8 +1,5 @@
 #include <avr/pgmspace.h>
 
-// =======================
-//        NOTE DEFINES
-// =======================
 #define NOTE_E4  330
 #define NOTE_G4  392
 #define NOTE_A4  440
@@ -13,9 +10,6 @@
 #define NOTE_G5  784
 #define REST 0
 
-// =======================
-//        پایه‌ها
-// =======================
 const int button1Pin = 13;
 const int button2Pin = 8;
 const int ledWhite   = 11;
@@ -23,9 +17,6 @@ const int ledRed1    = 12;
 const int ledRed2    = 9;
 const int buzzer     = 10;
 
-// =======================
-//        ملودی هیجانی
-// =======================
 int tempo = 140;
 
 const int melody[] PROGMEM = {
@@ -48,9 +39,6 @@ int thisNote = 0;
 unsigned long noteStartTime = 0;
 bool musicPlaying = true;
 
-// =======================
-//      وضعیت بازی
-// =======================
 bool gameStarted = false;
 bool gameFinished = false;
 bool falseStart = false;
@@ -81,7 +69,6 @@ void loop() {
 
   playBackgroundMusic();
 
-  // اگر قبل از روشن شدن چراغ سفید دکمه بزنند = باخت
   if (!gameStarted && !gameFinished) {
 
     if (digitalRead(button1Pin) == LOW) lose(1);
@@ -89,7 +76,7 @@ void loop() {
 
     if (millis() >= randomDelayTime) {
       digitalWrite(ledWhite, HIGH);
-      tone(buzzer, 1500, 150); // صدای شروع
+      tone(buzzer, 1500, 150);
       gameStarted = true;
     }
   }
@@ -101,9 +88,6 @@ void loop() {
   }
 }
 
-// =======================
-//        برنده
-// =======================
 void win(int player) {
 
   gameFinished = true;
@@ -114,7 +98,6 @@ void win(int player) {
   else
     digitalWrite(ledRed2, HIGH);
 
-  // ملودی برد
   tone(buzzer, 2000, 200);
   delay(250);
   tone(buzzer, 2500, 200);
@@ -125,14 +108,10 @@ void win(int player) {
   startNewRound();
 }
 
-// =======================
-//        باخت (تقلب)
-// =======================
 void lose(int player) {
 
   gameFinished = true;
 
-  // چشمک سریع اخطار
   for (int i = 0; i < 6; i++) {
     digitalWrite(ledRed1, HIGH);
     digitalWrite(ledRed2, HIGH);
@@ -146,9 +125,6 @@ void lose(int player) {
   startNewRound();
 }
 
-// =======================
-//      شروع راند جدید
-// =======================
 void startNewRound() {
 
   digitalWrite(ledWhite, LOW);
@@ -161,9 +137,6 @@ void startNewRound() {
   randomDelayTime = millis() + random(2000, 6000);
 }
 
-// =======================
-//    پخش نرم موسیقی
-// =======================
 void playBackgroundMusic() {
 
   if (millis() - noteStartTime >= noteDuration) {
@@ -179,7 +152,7 @@ void playBackgroundMusic() {
     if (pitch == REST)
       noTone(buzzer);
     else
-      tone(buzzer, pitch, noteDuration * 0.95); // بدون قطع ناگهانی
+      tone(buzzer, pitch, noteDuration * 0.95);
 
     noteStartTime = millis();
     thisNote += 2;
